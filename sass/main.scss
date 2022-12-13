@@ -66,7 +66,7 @@ nav {
     
 }
 
-section.blog-content {
+section.journal {
     h1 {
         margin-top: 2em;
         margin-bottom: 0em;
@@ -75,11 +75,24 @@ section.blog-content {
     }
 
     h2 {
-        margin-bottom: .5em;
         font-size: 1.5em;
+        &.tagline {
+            margin-bottom: 0 !important;
+        }
+    }
+
+    
+
+    span.meta-journal {
+        margin-bottom: .5em;
     }
 
     pre {
         overflow: auto;
+        border-radius: 1em;
     }
+}
+
+li.post-title {
+    list-style-type: none
 }

@@ -1,5 +1,10 @@
 {% extends "index.html" %}
  
 {% block content %}
-  {{ section.content | safe }}
+  <section class="journal">
+    <h1>{{section.title}}</h1>
+    <h2 class="highlight">{{section.description | safe}}</h2>
+
+    {{ section.content | safe }}
+  </section>
 {% endblock content %}

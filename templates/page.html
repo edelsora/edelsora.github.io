@@ -1,9 +1,12 @@
 {% extends "index.html" %}
  
 {% block content %}
-  <section class="blog-content">
+  <section class="journal">
     <h1>{{page.title}}</h1>
-    <h2 class="highlight">{{page.description | safe}}</h2>
+    <h2 class="highlight tagline">{{page.description | safe}}</h2>
+    <span class="meta-journal">
+      <b>{{ page.date | date(format="%B %d, %Y") }}</b>
+    </span>
 
     {{ page.content | safe }}
   </section>

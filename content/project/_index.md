@@ -1,5 +1,5 @@
 ---
-title: Project
+title: /project
 ---
 
 I am kind of jack of all trade and master of none, but I not stop learning. Here my project I was do for fun:

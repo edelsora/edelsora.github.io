@@ -13,6 +13,7 @@ How about designing an API? What its look like?
 Okay, let back to the basic thing. API work by receiving requests and producing a response after being handled by our API implementation function.
 
 So, in designing API we define how our API will respond if given a request, and define how the request and response shape:
+
 ```yaml
 /users/login:
     post:
@@ -65,11 +66,11 @@ For me, engaging myself to learn about OpenAPI is difficult at first like unders
 
 But after a couple of hours, I get used and thought it wise to design an API first instead of jumping to the text editor and writing the spec there. Here is the resources link, I used when learning OpenAPI:
 
-- https://swagger.io/docs/specification/basic-structure/
+- [https://swagger.io/docs/specification/basic-structure/](https://swagger.io/docs/specification/basic-structure/)
 
-- https://swagger.io/docs/specification/api-host-and-base-path/
+- [https://swagger.io/docs/specification/api-host-and-base-path/](https://swagger.io/docs/specification/api-host-and-base-path/)
 
-- https://www.youtube.com/watch?v=87ZFvJ7_-n0
+- [https://www.youtube.com/watch?v=87ZFvJ7_-n0](https://www.youtube.com/watch?v=87ZFvJ7_-n0)
 
 To work better while designing API, I recommended a tool that is designed to handle this kind of task. I use Insomnia daily for designing API, here is what it looks like:
 Appreance while I designing API
