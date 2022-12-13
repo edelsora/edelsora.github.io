@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+        <title>{% if page.title %}{{ page.title }} :: {% endif %}{{ config.title }}</title>
+        <link rel="stylesheet" href="{{ get_url(path="main.css") | safe }}">
+
+        <meta name="description" content="{% if page.description %}{{ page.description | safe }}{% else %}{{ config.description | safe }}{% endif %}">
+        <meta property="og:title" content="{% if page.title %}{{ page.title | safe }} :: {% endif %}{{ config.title | safe }}">
+        <meta property="og:description" content="{% if page.description %}{{ page.description | safe }}{% else %}{{ config.description | safe }}{% endif %}">
+        <meta property="og:type" content="website">
+
+        {% if current_url %}
+        <meta property="og:url" content="{{ current_url | safe }}">
+        <link rel="canonical" href="{{ current_url | safe }}">
+        {% endif %}
+
+        <link rel="icon" href="{{ config.extra.favicon | safe }}">
+    </head>
+    <body>
+        <header>
+            <nav>
+            {% for link in config.extra.navigations %}
+                <a href="{{ link.path | safe }}">{{ link.name }}</a>
+            {% endfor %}
+            </nav>
+        </header>
+        <main>
+            {% block content %}{% endblock content %}
+        </main>
+    </body>
+</html>

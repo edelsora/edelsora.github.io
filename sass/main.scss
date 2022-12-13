@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap');
+
+:root{
+    --heading-typeface: 'Outfit';
+    --main-typeface: 'Work Sans';
+    --highlight-color: #bf0000;
+    --main-color: #3c3d3d;
+    --link-color: #c41a0a;
+    // --main-color: #2f5061;
+    --body-color: #fffff0;
+}
+
+::selection {
+    background-color: var(--highlight-color);
+    color: var(--body-color);
+}
+
+h1,h2,h3,h4,h5,h6{
+    font-family: var(--heading-typeface);
+}
+
+.highlight {
+    color: var(--highlight-color);
+}
+
+$small: 300px;
+$medium: 900px;
+
+.smth {
+  //some CSS
+
+  @media screen and (min-width: $medium) {
+    //do Smth
+  }
+}
+
+a {
+    color: var(--link-color);
+}
+
+body {
+    max-width: 40rem;
+    padding: 0 3rem 3rem 3rem;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 18px;
+    font-family: var(--main-typeface);
+    line-height: 200%;
+    background-color: var(--body-color);
+    color: var(--main-color);
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    a {
+        font-family: var(--heading-typeface);
+        text-decoration-line: none;
+        font-weight: 700;
+        color: var(--main-color);
+        &:hover {
+            color: var(--highlight-color);
+        }
+    }
+    
+}
+
+section.blog-content {
+    h1 {
+        margin-top: 2em;
+        margin-bottom: 0em;
+        font-size: 3em;
+        line-height: 1.1;
+    }
+
+    h2 {
+        margin-bottom: .5em;
+        font-size: 1.5em;
+    }
+
+    pre {
+        overflow: auto;
+    }
+}
