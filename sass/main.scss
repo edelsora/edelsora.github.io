@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Source+Code+Pro:wght@400;500&display=swap');
 
 :root{
     --heading-typeface: 'Outfit';
@@ -90,9 +90,18 @@ section.journal {
     pre {
         overflow: auto;
         border-radius: 1em;
+        padding: .5em;
+        & span {
+            font-family: 'Source Code Pro', monospace !important;
+        }
+    }
+
+
+    p {
+        text-align: justify;
     }
 }
 
 li.post-title {
-    list-style-type: none
+    list-style-type: decimal-leading-zero;
 }
