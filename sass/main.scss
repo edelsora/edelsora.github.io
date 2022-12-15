@@ -30,9 +30,6 @@ $medium: 900px;
 .smth {
   //some CSS
 
-  @media screen and (min-width: $medium) {
-    //do Smth
-  }
 }
 
 a {
@@ -42,6 +39,9 @@ a {
 body {
     max-width: 40rem;
     padding: 0 3rem 3rem 3rem;
+    @media screen and (max-width: $medium) {
+        padding: 0 1rem 1rem 1rem;
+    }
     margin-right: auto;
     margin-left: auto;
     font-size: 18px;
@@ -69,6 +69,9 @@ nav {
 section.journal {
     h1 {
         margin-top: 2em;
+        @media screen and (max-width: $medium) {
+            margin-top: 1em !important;
+        }
         margin-bottom: 0em;
         font-size: 3em;
         line-height: 1.1;
@@ -104,4 +107,13 @@ section.journal {
 
 li.post-title {
     list-style-type: decimal-leading-zero;
+}
+
+th, td, table {
+    border: 1px solid var(--highlight-color);
+    border-collapse: collapse;
+}
+
+table {
+    overflow: auto;
 }

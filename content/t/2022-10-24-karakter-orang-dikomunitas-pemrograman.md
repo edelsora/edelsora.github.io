@@ -1,6 +1,7 @@
 ---
 title: Karakter Anggota Komunitas Pemrograman
 description: Keragaman karakter manusia dalam komunitas pemrograman, meskipun tidak semua benar.
+draft: true
 ---
 
 Saya mulai mengenal komunitas pemrograman baik daring dan luring sejak 2013, baik dalam kampus ataupun diluar kampus.
