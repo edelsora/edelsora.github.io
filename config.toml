@@ -17,7 +17,7 @@ highlight_theme = "gruvbox-light"
 
 [extra]
 # Put all your custom variables here
-favicon = ""
+favicon = "/favicon.png"
 navigations = [
     { name = "/home", path = "/" },
     { name = "/now", path = "/now" },
