@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+        <title>Cerita Saya Mengenal F# :: Akasia</title>
+        <link rel="stylesheet" href="https://edelsora.github.io/main.css">
+
+        <meta name="description" content="Bahasa pemrograman fungsional yang praktis, berfungsi dan magic.">
+        <meta property="og:title" content="Cerita Saya Mengenal F# :: Akasia">
+        <meta property="og:description" content="Bahasa pemrograman fungsional yang praktis, berfungsi dan magic.">
+        <meta property="og:type" content="website">
+
+        
+        <meta property="og:url" content="https://edelsora.github.io/t/mengenal-fsharp/">
+        <link rel="canonical" href="https://edelsora.github.io/t/mengenal-fsharp/">
+        
+
+        <link rel="icon" href="/favicon.png">
+    </head>
+    <body>
+        <header>
+            <nav>
+            
+                <a href="/">&#x2F;home</a>
+            
+                <a href="/now">&#x2F;now</a>
+            
+                <a href="/project">&#x2F;project</a>
+            
+            </nav>
+        </header>
+        <main>
+            
+  <section class="journal">
+    <h1>Cerita Saya Mengenal F#</h1>
+    <h2 class="highlight tagline">Bahasa pemrograman fungsional yang praktis, berfungsi dan magic.</h2>
+    <span class="meta-journal">
+      <b>December 14, 2022</b>
+    </span>
+
+    <p>Awal perkenalan saya dengan F# (dibaca, F sharp) dimulai dari mencari bahasa alternatif dari ReasonML/OCaml yang
+saya gunakan untuk belajar pemrograman (paradigma) fungsional karena ekosistem bahasa tersebut kurang
+mendukung untuk bidang saya : Web dan Game, sampai saya bertemu dengan <a href="https://blog.darklang.com/leaving-ocaml/">artikel ini</a>.</p>
+<p>F# adalah bahasa pemrograman dari ekosistem .NET (dibaca, dot net) dengan paduan paradigma fungsional, imperatif dan <em>object-oriented</em> serta ditambah pernak-pernik keluarga <em>Meta-Language</em> seperti <em>Algebraic Data Type</em> dan <em>Pattern Matching</em>. </p>
+<ul>
+<li>OCaml</li>
+</ul>
+<pre data-lang="ocaml" style="background-color:#fcf0ca;color:#282828aa;" class="language-ocaml "><code class="language-ocaml" data-lang="ocaml"><span style="color:#9d0006;">type habitat_type </span><span>= </span><span style="color:#407959;">Terestrial </span><span>| </span><span style="color:#407959;">Akuatik
+</span><span>
+</span><span style="color:#9d0006;">type biologis_type </span><span>=  </span><span style="color:#407959;">Hewan </span><span style="color:#9d0006;">of habitat_type </span><span>| </span><span style="color:#407959;">Tumbuhan </span><span style="color:#9d0006;">of habitat_type
+</span><span>
+</span><span style="color:#9d0006;">type biodata </span><span>= { </span><span style="color:#282828;">name</span><span>: </span><span style="color:#9d0006;">string</span><span style="color:#b23c15;">; </span><span style="color:#282828;">types</span><span>: </span><span style="color:#9d0006;">biologis_type</span><span>}
+</span><span>
+</span><span style="color:#9d0006;">let </span><span style="color:#407959;">ceritakan_biodata </span><span>(</span><span style="color:#282828;">b</span><span style="color:#9d0006;">: biodata</span><span>) </span><span style="color:#b23c15;">=
+</span><span>    </span><span style="color:#9d0006;">match</span><span> b.types </span><span style="color:#9d0006;">with
+</span><span>    </span><span style="color:#9d0006;">| </span><span style="color:#407959;">Hewan </span><span style="color:#282828;">habitat </span><span>-&gt;
+</span><span>        </span><span style="color:#9d0006;">match</span><span> habitat </span><span style="color:#9d0006;">with
+</span><span>        </span><span style="color:#9d0006;">| </span><span style="color:#407959;">Terestrial </span><span>-&gt; print_endline (Printf.sprintf </span><span style="color:#79740e;">&quot;%s hidup di darat&quot;</span><span> b.name)
+</span><span>        </span><span style="color:#9d0006;">| </span><span style="color:#407959;">Akuatik </span><span>-&gt; print_endline (Printf.sprintf </span><span style="color:#79740e;">&quot;%s hidup di air&quot;</span><span> b.name)
+</span><span>    </span><span style="color:#9d0006;">| </span><span style="color:#407959;">Tumbuhan </span><span style="color:#282828;">habitat </span><span>-&gt;
+</span><span>        </span><span style="color:#9d0006;">match</span><span> habitat </span><span style="color:#9d0006;">with
+</span><span>        </span><span style="color:#9d0006;">| </span><span style="color:#407959;">Terestrial </span><span>-&gt; print_endline (Printf.sprintf </span><span style="color:#79740e;">&quot;%s tumbuh di darat&quot;</span><span> b.name)
+</span><span>        </span><span style="color:#9d0006;">| </span><span style="color:#407959;">Akuatik </span><span>-&gt; print_endline (Printf.sprintf </span><span style="color:#79740e;">&quot;%s tumbuh di air&quot;</span><span> b.name)
+</span><span>
+</span><span style="color:#9d0006;">let </span><span style="color:#407959;">main </span><span style="color:#282828;">() </span><span style="color:#b23c15;">=
+</span><span>    </span><span style="color:#9d0006;">let </span><span style="color:#282828;">me </span><span style="color:#b23c15;">= </span><span>{ name</span><span style="color:#b23c15;">=</span><span style="color:#79740e;">&quot;Akasia&quot;</span><span>; types</span><span style="color:#b23c15;">= </span><span style="color:#407959;">Hewan Terestrial</span><span>} </span><span style="color:#9d0006;">in
+</span><span>    ceritakan_biodata(me)
+</span></code></pre>
+<ul>
+<li>F#</li>
+</ul>
+<pre data-lang="f#" style="background-color:#fcf0ca;color:#282828aa;" class="language-f# "><code class="language-f#" data-lang="f#"><span style="color:#9d0006;">type </span><span style="color:#407959;">HabitatType </span><span style="color:#9d0006;">=</span><span> Terestrial </span><span style="color:#9d0006;">|</span><span> Akuatik
+</span><span>
+</span><span style="color:#9d0006;">type </span><span style="color:#407959;">BiologisType </span><span style="color:#9d0006;">=</span><span>  Hewan </span><span style="color:#9d0006;">of </span><span style="color:#407959;">HabitatType </span><span style="color:#9d0006;">|</span><span> Tumbuhan </span><span style="color:#9d0006;">of </span><span style="color:#407959;">HabitatType
+</span><span>
+</span><span style="color:#9d0006;">type </span><span style="color:#407959;">Biodata </span><span style="color:#9d0006;">= {</span><span> name</span><span style="color:#9d0006;">: </span><span style="color:#407959;">string</span><span style="color:#9d0006;">;</span><span> types</span><span style="color:#9d0006;">: </span><span style="color:#407959;">BiologisType</span><span style="color:#9d0006;">}
+</span><span>
+</span><span style="color:#9d0006;">let </span><span style="color:#282828;">ceritakanBiodata </span><span style="color:#9d0006;">(</span><span style="color:#282828;">b</span><span style="color:#9d0006;">: </span><span style="color:#407959;">Biodata</span><span style="color:#9d0006;">) =
+</span><span>    </span><span style="color:#9d0006;">match</span><span> b.types </span><span style="color:#9d0006;">with
+</span><span>    </span><span style="color:#9d0006;">|</span><span> Hewan habitat </span><span style="color:#9d0006;">-&gt;
+</span><span>        </span><span style="color:#9d0006;">match</span><span> habitat </span><span style="color:#9d0006;">with
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Terestrial </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> hidup di darat&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Akuatik </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> hidup di air&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>    </span><span style="color:#9d0006;">|</span><span> Tumbuhan habitat </span><span style="color:#9d0006;">-&gt;
+</span><span>        </span><span style="color:#9d0006;">match</span><span> habitat </span><span style="color:#9d0006;">with
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Terestrial </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> tumbuh di darat&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Akuatik </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> tumbuh di air&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>    
+</span><span style="color:#9d0006;">let </span><span style="color:#282828;">main _ </span><span style="color:#9d0006;">=
+</span><span>    </span><span style="color:#9d0006;">let </span><span style="color:#282828;">me </span><span style="color:#9d0006;">= {</span><span> name</span><span style="color:#9d0006;">=</span><span style="color:#79740e;">&quot;Akasia&quot;</span><span style="color:#9d0006;">;</span><span> types </span><span style="color:#9d0006;">=</span><span> Hewan Terestrial</span><span style="color:#9d0006;">} 
+</span><span>    ceritakanBiodata</span><span style="color:#9d0006;">(</span><span>me</span><span style="color:#9d0006;">)
+</span></code></pre>
+<p>F# bisa menggunakan pustaka dari ekosistem .NET yang sudah <em>mature</em> seperti ASP.NET dan Entity Framework
+dengan pendekatan fungsional.</p>
+<h2 id="sentuhan-pertama">Sentuhan Pertama</h2>
+<p>Saat menginstall F# pertama kali, saya sudah dibuat bingung dengan pilihanya karena jika kamu ingin menginstall kompiler
+F# maka kamu harus menginstall .NET <em>Software Development Kit</em> (SDK) yang sudah termasuk C# dan F# didalamnya.</p>
+<p>Jadi kamu tidak bisa menginstall hanya salah satu saja dan uniknya kode yang ditulis di C# ataupun F# bisa memanggil fungsi satu sama lain.</p>
+<p><em>Culture shock</em> lainya yaitu perihal membuat proyek, .NET memiliki 2 jenis struktur <em>codebase</em> seperti <em>project</em> dan <em>solution</em>. 
+<em>project</em> merupakan wadah tempat kamu ngoding seperti <code>go mod init</code> di Go atau <code>pnpm init</code> pada Javascript. </p>
+<p>Kemudian yang terakhir <em>solution</em>  yang berarti kumpulan dari banyak proyek. Celakanya saat awal mencoba F# saya membuat <em>solution</em> yang saya kira tadinya seperti membuat <em>project</em>, yang akhirnya membuat saya makin kebingungan.</p>
+<p>Terakhir yaitu <em>project</em> template, ketika kamu membuat sebuah <em>project</em> baru kamu akan disuguhi berbagai macam template untuk memulai
+<em>codebase</em>. Hal ini memang sangat membantu melakukan scaffolding <em>project</em> dengan cepat tanpa repot install pustaka manual.</p>
+<p>Saya berasal dari bahasa yang memulai dari <em>scratch</em> (nulis dari 0) seperti Go atau Python (saya tahu banyak template tapi tidak <em>built-in</em> dan kurang <em>enforced</em> kedalam <em>workflow</em> koding) ini juga membingungkan dan terlihat seperti <em>wut gini doang?</em> karena kebiasaan <em>strat from scratch</em>. </p>
+<p>Pilihan yang paling sesuai untuk <em>scratcher</em> seperti saya yaitu template <em>console</em> sebuah template <em>bare minimum</em> sebuah program baris perintah untuk kamu memulai <em>project</em>,  <code>dotnet new console -n &lt;nama project&gt; -lang F#</code>. </p>
+<p>Berikut daftar template yang menurut saya penting:</p>
+<table><thead><tr><th>nama</th><th>deskripsi</th><th>cara install template</th></tr></thead><tbody>
+<tr><td><code>console</code></td><td>Console app</td><td>built-in</td></tr>
+<tr><td><code>webapi</code></td><td>ASP.NET Core Web API</td><td>built-in</td></tr>
+<tr><td><code>classlib</code></td><td>Class Library</td><td>built-in</td></tr>
+<tr><td><code>giraffe</code></td><td>Giraffe template</td><td><code>dotnet new -i &quot;giraffe-template::*&quot;</code></td></tr>
+<tr><td><code>SAFE</code></td><td>SAFE-stack template</td><td><code>dotnet new -i SAFE.Template</code></td></tr>
+<tr><td><code>sln</code></td><td>Solution</td><td>built-in</td></tr>
+<tr><td><code>xunit</code></td><td>xUnit unit test</td><td>built-in</td></tr>
+</tbody></table>
+<p>Kesimpulan yang saya dapat dari bersentuhan ini adalah ekosistem .NET menekankan <em>developer experience</em>. Saya terilhami oleh cara <a href="https://vercel.com">Vercel</a> membantu <em>deployment</em> yang biasanya ruwet menjadi <em>zero config</em> (tetap kamu masih bisa <em>override config</em> nya) begitu pula yang ingin dicapai .NET dengan ekosistemnya.</p>
+<p>Hambatan yang saya temui adalah saya perlu membiasakan diri dengan &quot;.NET way&quot; agar melakukan sesuatu menjadi lebih mudah dan tanpa membuang mentalitas <em>scratcher</em> yang tentunya berguna untuk eksplorasi teknologi lain.</p>
+<h2 id="kenikmatan">Kenikmatan</h2>
+<p>Sentuhan pertama saya dengan .NET terutama F# terkesan seperti mobil yang kepater dijalan berlumpur saat pulang kampung, perlu beberapa penyesuaian pada mindset agar dapat berkerja melalui kacamata ekosistem .NET dan merasakan kenikmatanya.</p>
+<p>Hal yang pertama saya coba lepaskan yakni perdebat para <em>scratcher</em> seperti <em>ORM Bad and Raw Driver Good</em>, <em>Zero-allocation shithole</em>, <em>Cutting Edge Techstack</em>. Disini saya coba berpikir naif dan fokus kepada implementasi dengan pustaka yang sudah mature (<code>boring techstack</code>), tentunya ASP.NET dkk.</p>
+<p>Biasanya saya skeptis dengan pemilihan pustaka, sekarang saya belajar tidak peduli. Ketidakpedulian ini bukan tanpa dasar, hal ini terjadi ketika saya melihat performa F# di laptop saya. </p>
+<p>Kinerja yang dicapai cukup mengherankan, kompilasi cepat, kinerja cepat meskipun pustaka (Giraffe dan Entity Framework) yang saya pakai terlihat besar dan membantah stigma paradigma fungsional memiliki kinerja yang miring (tetapi sekarang, tidak selambat kabarnya). </p>
+<p>Kemangkusan tata bahasa dari F# yang hampir identik dengan OCaml memberikan saya produktivitas yang berbeda, saya lebih memiliki <em>clarity</em> dengan kode-kode yang saya baca dan tulis bahkan baru mencoba beberapa hari saya sudah melakukan <a href="https://github.com/Dolfik1/Funogram/pull/53">kontribusi <em>open-source</em></a>.</p>
+<p>Hal yang membuat saya lebih memiliki <em>clarity</em> adalah kejelasan dari <em>best pratice</em> dan <em>design pattern</em> yang memberi saya perasaan <em>Oh memang begini caranya</em>. Salah satu contohnya bernama <a href="https://fsharpforfunandprofit.com/rop/"><em>Railway oriented programming</em></a>:</p>
+<pre data-lang="f#" style="background-color:#fcf0ca;color:#282828aa;" class="language-f# "><code class="language-f#" data-lang="f#"><span style="color:#9d0006;">let </span><span style="color:#282828;">ceritakanBiodata </span><span style="color:#9d0006;">(</span><span style="color:#282828;">b</span><span style="color:#9d0006;">: </span><span style="color:#407959;">Biodata</span><span style="color:#9d0006;">) =
+</span><span>    </span><span style="color:#9d0006;">match</span><span> b.types </span><span style="color:#9d0006;">with
+</span><span>    </span><span style="color:#9d0006;">|</span><span> Hewan habitat </span><span style="color:#9d0006;">-&gt;
+</span><span>        </span><span style="color:#9d0006;">match</span><span> habitat </span><span style="color:#9d0006;">with
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Terestrial </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> hidup di darat&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Akuatik </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> hidup di air&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>    </span><span style="color:#9d0006;">|</span><span> Tumbuhan habitat </span><span style="color:#9d0006;">-&gt;
+</span><span>        </span><span style="color:#9d0006;">match</span><span> habitat </span><span style="color:#9d0006;">with
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Terestrial </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> tumbuh di darat&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span><span>        </span><span style="color:#9d0006;">|</span><span> Akuatik </span><span style="color:#9d0006;">-&gt;</span><span> print</span><span style="color:#9d0006;">_</span><span>endline </span><span style="color:#9d0006;">(</span><span>Printf.sprintf </span><span style="color:#79740e;">&quot;</span><span style="color:#9d0006;">%s</span><span style="color:#79740e;"> tumbuh di air&quot;</span><span> b.name</span><span style="color:#9d0006;">)
+</span></code></pre>
+<p>Kode diatas ibarat sebuah persimpangan kereta API, setiap hasil dihadapi dengan dua pilihan. Saya
+pikir ini cara yang buruk karena harus menangani seluruh nilai yang ada, ternyata memang begini caranya.</p>
+<p>Saat saya menggunakan OCaml menjumpai hal seperti tetapi banyak orang yang menulis <em>&quot;smart code&quot;</em> (seperti : <code>&gt;&gt;=</code>, <code>&gt;|=</code>) untuk menghindari penulisan diatas yang juga bingung mereka dapat dari mana (minim sumber yang saya dapat terkait pemahaman operator demikian).</p>
+<p>Tetapi di F# hal seperti di <em>encourage</em> mesikpun terlihat <em>dumb code</em> sehingga saya percaya diri dan mendapatkan <em>sense of magnitude</em>
+: &quot;Oh begini ngoding F#&quot;.</p>
+<h3 id="kasus-pakai">Kasus pakai</h3>
+<p>F# merupakan bahasa tingkat tinggi untuk kelas aplikasi (antonimnya, kelas sistem). Implementasi digunakan untuk membuat:</p>
+<ul>
+<li><a href="https://fsharp.org/guides/web"><em>web fullstack/service</em></a>, </li>
+<li><a href="https://fsharp.org/testimonials/"><em>enterprice application service</em></a>, </li>
+<li><a href="https://fsharp.org/guides/mobile-apps/"><em>mobile apps</em></a></li>
+<li><a href="https://fslab.org/tutorials.html"><em>data science</em></a>.</li>
+</ul>
+<p>Saya menggunakan F# untuk kasus <em>web service</em>, <em>web fullstack</em> dan bot telegram. Bagi saya untuk mengatakan F# sebagai bahasa FTW (<code>for the win</code>) baru berlaku untuk Web. </p>
+<p>Di sisi lain saya merasa <em>Game Developement</em> lebih baik diserahkan ke paradigma <em>object-oriented</em>, maka untuk game saya masih memihak <code>Haxe</code> tanpa mengurangi antusias saya mengenal F# lebih lanjut.</p>
+<h2 id="kesimpulan">Kesimpulan</h2>
+<p>F# dapat dikatakan OCaml-nya ekosistem .NET dan lebih memiliki konten yang mendorong penggunaan penyelesaian masalah secara
+praktikal ketimbang perseturan akademia (seperti <code>functor</code> dan semacanya di komunitas OCaml). OCaml tidak buruk bahkan menurut saya
+bagus disuatu sisi, hanya saja komunitasnya yang cukup bernuansa akademik memerlukan <em>briddiging</em> untuk memahaminya dan ekosistemnya yang sedang mencoba untuk <em>mature</em> dengan kebutuhan industri.</p>
+<p>Merasakan kenikmatan <em>developer experience</em>  .NET perlu penyesuaian mental model juga untuk memetakan bagaimana kita berkerja dan 
+mengetahui <em>best pratices</em> melakukan sesuatu disana, seperti saya kebiasaan memulai membuat web dengan sign in dan sign up dengan 
+memulai dengan table <code>users</code> dan ternyata cara tersebut sudah di scaffold menggunakan ASP.NET Identity sehingga tidak perlu membuat table manual.</p>
+<p>Sejauh saya menulis ini, masih ada banyak hal yang tidak ketahui dari ekosistem .NET yang <em>magic</em> dalam mempersingkat <em>workflow</em> pekerjaan, maka akan saya tulis dilain waktu ketika saya sudah cukup mengenalnya.</p>
+<p>Wejangan penutup, pandangan pertama saat saya mendengar kata .NET, saya teingat stigma nya yang buruk yakni: <em>closed-source</em> dan mahal, 
+bahkan kala itu pengembangan hanya bisa menggunakan Visual Studio yang juga berbayar. Ternyata stigma tersebut sudah tidak belaku lagi, sekarang ekosistem .NET sebagian besar sudah di rilis secara <em>open-source</em> termasuk C# dan F#. </p>
+<p>Kode editornya pun sudah tidak ekslusif di Visual Studio, sekarang kamu bisa mengembangkan program berbasis .NET di Visual Studio Code (meskipun saya tahu mereka sesama besutan Microsoft), dan tentunya ini cukup mengejutkan karena saya ingat Visual Basic 6 itu berbayar dan itu bahasa pemrograman pertama saya.</p>
+<p>EOF</p>
+
+  </section>
+
+        </main>
+    </body>
+</html>
