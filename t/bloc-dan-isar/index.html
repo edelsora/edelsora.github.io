@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+        <title>Catatan Flutter: Bloc dan Isar :: Akasia</title>
+        <link rel="stylesheet" href="https://edelsora.github.io/main.css">
+
+        <meta name="description" content="Sebuah state management dan embedded database di flutter">
+        <meta property="og:title" content="Catatan Flutter: Bloc dan Isar :: Akasia">
+        <meta property="og:description" content="Sebuah state management dan embedded database di flutter">
+        <meta property="og:type" content="website">
+
+        
+        <meta property="og:url" content="https://edelsora.github.io/t/bloc-dan-isar/">
+        <link rel="canonical" href="https://edelsora.github.io/t/bloc-dan-isar/">
+        
+
+        <link rel="icon" href="/favicon.png">
+    </head>
+    <body>
+        <header>
+            <nav>
+            
+                <a href="/">&#x2F;home</a>
+            
+                <a href="/now">&#x2F;now</a>
+            
+                <a href="/project">&#x2F;project</a>
+            
+            </nav>
+        </header>
+        <main>
+            
+  <section class="journal">
+    <h1>Catatan Flutter: Bloc dan Isar</h1>
+    <h2 class="highlight tagline">Sebuah state management dan embedded database di flutter</h2>
+    <span class="meta-journal">
+      <b>December 29, 2022</b>
+    </span>
+
+    <h2 id="bloc">Bloc</h2>
+<ul>
+<li>State managemen model-update, mirip mvu tanpa V di flutter. </li>
+<li>Bloc punya state (Model di MVU) tempat nyimpen data sementara dan event (Update di MVU) tempat ngubah data, kalo di react mirip redux, kalo di otomata mirip <em>Non-Deterministic Finite Automata</em> punya state, rule dan data.</li>
+<li>State management hanya tempat menyimpan data dari aksi/event/update, jadi sangat wajar untuk state berganti jenis kelasnya, state Initial, state Wait dan state Result.</li>
+<li>Bloc berkomunikasi antar widget dengan passing lewat build context, kalo di JS familiy ini  mirip pasing prop dan implicit tapi flutter totaly explicit.</li>
+<li>Presentasi Bloc dan ListView bersifat orthogonal, jadi perubahan data harus handle di kedua pihak, baik di index list view dan send event untuk aksi data, ini juga berlaku untuk presetation layer/widget yang punya state sendiri.</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span>onPressed</span><span style="color:#b23c15;">:</span><span> (){
+</span><span>	results </span><span style="color:#b23c15;">=</span><span> results.</span><span style="color:#407959;">removeAt</span><span>(indexItem); </span><span style="font-style:italic;color:#928374;">// handle listview
+</span><span>	commandBloc.</span><span style="color:#407959;">add</span><span>(</span><span style="color:#407959;">CommandDelete</span><span>(item.id)); </span><span style="font-style:italic;color:#928374;">// handle bloc
+</span><span>}
+</span></code></pre>
+<ul>
+<li>Kalau ada modifikasi ada yang pindah ke halaman lain (navigate), trigger bloc untuk rerender listview setelah balik ke halaman asal via callback <em>whenComplete</em>, pakai then malah ada miss dan ga trigger event, sebab then ga bersifat finally yang mana jadi end hook buat semua kondisi.</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="color:#407959;">Navigator</span><span>.</span><span style="color:#407959;">of</span><span>(context)
+</span><span>    .</span><span style="color:#407959;">push</span><span>(...)
+</span><span>    .</span><span style="color:#407959;">whenComplete</span><span>(()</span><span style="color:#b23c15;">=&gt;</span><span> queryBloc.</span><span style="color:#407959;">add</span><span>(</span><span style="color:#407959;">QueryPagging</span><span>())) 
+</span><span style="font-style:italic;color:#928374;">// ini ketika tutup halaman push dari router utama,
+</span><span style="font-style:italic;color:#928374;">// bakal trigger bloc buat rerender list view
+</span></code></pre>
+<ul>
+<li>Halaman navigate rekomended pakai BlocConsumer untuk listen perubahan Blocnya, supaya ketika trigger event bisa kelacak perubahan apalagi yang ada navigator pop (balik ke halaman asli).</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="color:#407959;">BlocConsumer</span><span style="color:#b23c15;">&lt;</span><span style="color:#407959;">BlocCommand</span><span>, </span><span style="color:#407959;">BlocCommandState</span><span style="color:#b23c15;">&gt;</span><span>(
+</span><span>    bloc</span><span style="color:#b23c15;">:</span><span> command,
+</span><span>    listener</span><span style="color:#b23c15;">:</span><span> (listenerCtx, listenerState) {
+</span><span>      </span><span style="color:#9d0006;">if</span><span> (state </span><span style="color:#b23c15;">is </span><span style="color:#407959;">CommandResponse</span><span>) {
+</span><span>        </span><span style="font-style:italic;color:#928374;">// ini untuk balik ke halaman utama 
+</span><span>        </span><span style="font-style:italic;color:#928374;">// setelah selesai task blocnya
+</span><span>        </span><span style="color:#407959;">Navigator</span><span>.</span><span style="color:#407959;">pop</span><span>(context, </span><span style="color:#8f3f71;">true</span><span>);
+</span><span>      }
+</span><span>    },
+</span><span>
+</span><span>    builder</span><span style="color:#b23c15;">:</span><span> (builderCtx, builderState) {
+</span><span>	    </span><span style="font-style:italic;color:#928374;">// UI 
+</span><span>	    onPressed</span><span style="color:#b23c15;">:</span><span> () {
+</span><span>		    commandBloc.</span><span style="color:#407959;">add</span><span>(</span><span style="color:#407959;">CommandAdd</span><span>(...))
+</span><span>	    }
+</span><span>    }
+</span><span>  )
+</span></code></pre>
+<ul>
+<li>Kalau ada modifikasi enggak pindah halaman (stay on page), tangkep perubahan state dari bloc untuk rerender UI.</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="font-style:italic;color:#928374;">// anggep dalam fungsi build widget
+</span><span style="color:#9d0006;">if</span><span>(state </span><span style="color:#b23c15;">is </span><span style="color:#407959;">StateInitial</span><span>){
+</span><span>    </span><span style="color:#9d0006;">return </span><span style="font-style:italic;color:#928374;">// saat initial
+</span><span>}
+</span><span>
+</span><span style="color:#9d0006;">if</span><span>(state </span><span style="color:#b23c15;">is </span><span style="color:#407959;">StateWait</span><span>){
+</span><span>    </span><span style="color:#9d0006;">return </span><span style="font-style:italic;color:#928374;">// saat menunggu hasil bloc
+</span><span>}
+</span><span>
+</span><span>
+</span><span style="color:#9d0006;">if</span><span>(state </span><span style="color:#b23c15;">is </span><span style="color:#407959;">StateResult</span><span>){
+</span><span>    </span><span style="color:#9d0006;">return </span><span style="font-style:italic;color:#928374;">// saat mendapat hasil dari bloc
+</span><span>}
+</span></code></pre>
+<ul>
+<li>
+<p>Kalau ada perubahan UI yang sifatnya stay on page, pastiin nge-catch kondisi di presentation layer (widget) supaya ke rerender, dan jangan lupa initial state selalu netral ga ada uinya.</p>
+</li>
+<li>
+<p>Bloc Provider mirip Provider di Javascript tapi lebih eksplitsit untuk aksesnya terutama pas push navigation yang bikin BuildContext baru, harus inject build context berisi provider bloc kesana.</p>
+</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="font-style:italic;color:#928374;">// ini di define di widget paling awal kek MaterialApp dkk
+</span><span style="color:#407959;">BlocProivder</span><span>(
+</span><span>	create</span><span style="color:#b23c15;">:</span><span> (_) </span><span style="color:#b23c15;">=&gt; </span><span style="color:#407959;">BlocQuery</span><span>()
+</span><span>	child</span><span style="color:#b23c15;">: </span><span style="font-style:italic;color:#928374;">// Widget apapun yang punya build context dan bloc builder
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// Anggep aja kode dibawah ini sudah masuk widget
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// Akses Bloc dari BlocProvider lewat BuildContext
+</span><span style="color:#407959;">BlocQuery</span><span> query </span><span style="color:#b23c15;">= </span><span style="color:#407959;">BlocProvide</span><span>.</span><span style="color:#407959;">of</span><span>&lt;</span><span style="color:#407959;">BlocQuery</span><span style="color:#b23c15;">&gt;</span><span>(context) </span><span style="font-style:italic;color:#928374;">// contet didapet dari Widget 
+</span><span>
+</span><span style="color:#407959;">BlocBuilder</span><span>(
+</span><span>   bloc</span><span style="color:#b23c15;">:</span><span> query </span><span style="font-style:italic;color:#928374;">// pakaai bloc yang didapet dari BlocProvider
+</span><span>   builder</span><span style="color:#b23c15;">:</span><span> (queryCtx,queryState){ </span><span style="font-style:italic;color:#928374;">// penting penamaan harus dibedakan biar tidak rancu
+</span><span>   }
+</span><span>)
+</span></code></pre>
+<ul>
+<li>Bloc dengan EventMapperState yang berisi fungsi asynchronous harus punya state Wait untuk ngindikasiin dia lagi kerja, ini sama aja mirip await tapi level Bloc layer, jadi saat trigger fungsi ini bakal emit state Wait dan emit Result state untuk rerender UI.
+<ul>
+<li>state Wait, munculin UI loading</li>
+<li>state Result, munculin hasil UI</li>
+</ul>
+</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="color:#9d0006;">abstract class </span><span style="color:#407959;">BlocQueryState</span><span>{}
+</span><span>
+</span><span style="color:#9d0006;">class </span><span style="color:#407959;">BlocQueryInitial </span><span style="color:#9d0006;">extends </span><span style="color:#407959;">BlocQueryState</span><span> {}
+</span><span>
+</span><span style="color:#9d0006;">class </span><span style="color:#407959;">BlocQueryWait </span><span style="color:#9d0006;">extends </span><span style="color:#407959;">BlocQueryState</span><span> {}
+</span><span>
+</span><span style="color:#9d0006;">class </span><span style="color:#407959;">BlocQueryResult </span><span style="color:#9d0006;">extends </span><span style="color:#407959;">BlocQueryState</span><span> {
+</span><span>	</span><span style="color:#9d0006;">final </span><span style="color:#407959;">List</span><span style="color:#b23c15;">&lt;</span><span style="color:#407959;">String</span><span style="color:#b23c15;">&gt;</span><span> results; </span><span style="font-style:italic;color:#928374;">// ganti dengan tipe data sesuai kebutuhan
+</span><span>	</span><span style="color:#9d0006;">const </span><span style="color:#407959;">BlockQueryResult</span><span>(</span><span style="color:#282828;">this</span><span>.results);
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// didalem widget, nyambung sama yang atas
+</span><span style="color:#407959;">Scaffold</span><span>(
+</span><span>	child</span><span style="color:#b23c15;">: </span><span style="color:#407959;">BlocProvider</span><span>(
+</span><span>		bloc</span><span style="color:#b23c15;">:</span><span> query,
+</span><span>		builder</span><span style="color:#b23c15;">:</span><span> (queryCtx,queryState){
+</span><span>			</span><span style="font-style:italic;color:#928374;">// tangkep perubahan state
+</span><span>			</span><span style="color:#9d0006;">if</span><span> (queryState </span><span style="color:#b23c15;">is </span><span style="color:#407959;">BlocQueryWait</span><span>){
+</span><span>				</span><span style="font-style:italic;color:#928374;">// return circlerindicator
+</span><span>			}</span><span style="color:#9d0006;">else</span><span>{
+</span><span>				</span><span style="color:#9d0006;">var</span><span> results </span><span style="color:#b23c15;">=</span><span> queryState.results;
+</span><span>				</span><span style="font-style:italic;color:#928374;">// sajikan isi results  dalam listview / etc
+</span><span>			}
+</span><span>		}
+</span><span>	)
+</span><span>)
+</span></code></pre>
+<ul>
+<li>Memahami MVU membantu berkenalan dengan mekanism Bloc, tetapi tidak untuk implementasi ala flutter way yang explisit / OOP-ish.</li>
+<li>Saya masih bodoh masalah Equatable, yang mungkin bisa menghapus keperluan akan state Wait dan langsung rerender dari state Result, ini hanya hipotesis.</li>
+<li>Bloc bagus, dokumentasinya bagus, contoh kode dari repositori resminya berantakan dan kurang noob-friendly. Todo List DDD, wtf, walaupun saya juga ketularan kacaunya bikin CQRS dengan Bloc. Dokumentasinya bagus tapi saya pribadi kesulitan menerima maksudnya, ga jauh beda pusingnya baca dokumentasi Redux atau RxJs.</li>
+</ul>
+<h2 id="isar">Isar</h2>
+<ul>
+<li>Non-SQL ACID-compliant Full-Text-Search database untuk flutter, elasticsearchnya flutter <em>jokes aside</em>.</li>
+<li>Setiap akses haru berupa transaksi.</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="color:#9d0006;">await</span><span> isar.</span><span style="color:#407959;">writeTxn</span><span>(</span><span style="color:#9d0006;">async</span><span>(){}) </span><span style="font-style:italic;color:#928374;">// transaksi untuk write ke db
+</span><span style="color:#9d0006;">await</span><span> isar.</span><span style="color:#407959;">txt</span><span>(</span><span style="color:#9d0006;">async</span><span>(){}) </span><span style="font-style:italic;color:#928374;">// transaksi untuk query data dari db
+</span></code></pre>
+<ul>
+<li>Jika pakai Bloc dengan fungsi Asynchronous, maka cocok dengan Isar karena semuanya Asynchornous.</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="color:#9d0006;">on</span><span style="color:#b23c15;">&lt;</span><span style="color:#407959;">CommandDelete</span><span style="color:#b23c15;">&gt;</span><span>((event, emit) </span><span style="color:#9d0006;">async</span><span> {
+</span><span>      </span><span style="color:#407959;">emit</span><span>(</span><span style="color:#407959;">CommandWait</span><span>()); </span><span style="font-style:italic;color:#928374;">// untuk indikator loading dan rerender ui
+</span><span>      </span><span style="color:#9d0006;">await</span><span> db.</span><span style="color:#407959;">writeTxn</span><span>(() </span><span style="color:#9d0006;">async</span><span> {
+</span><span>        </span><span style="color:#9d0006;">await</span><span> db.dataUnits.</span><span style="color:#407959;">delete</span><span>(event.id);
+</span><span>        </span><span style="color:#407959;">emit</span><span>(</span><span style="color:#407959;">CommandResult</span><span>(</span><span style="color:#8f3f71;">null</span><span>)); </span><span style="font-style:italic;color:#928374;">// respon hasil dan rereneder ui
+</span><span>      });
+</span><span>    });
+</span><span>
+</span><span style="color:#9d0006;">on</span><span style="color:#b23c15;">&lt;</span><span style="color:#407959;">CommandAdd</span><span style="color:#b23c15;">&gt;</span><span>((event, emit) </span><span style="color:#9d0006;">async</span><span> {
+</span><span>      </span><span style="color:#407959;">emit</span><span>(</span><span style="color:#407959;">CommandWait</span><span>()); 
+</span><span>      </span><span style="color:#9d0006;">await</span><span> db.</span><span style="color:#407959;">writeTxn</span><span>(() </span><span style="color:#9d0006;">async</span><span> {
+</span><span>        </span><span style="color:#9d0006;">final</span><span> id </span><span style="color:#b23c15;">= </span><span style="color:#9d0006;">await</span><span> db.dataUnits.</span><span style="color:#407959;">put</span><span>(event.item);
+</span><span>        </span><span style="color:#407959;">emit</span><span>(</span><span style="color:#407959;">CommandResult</span><span>(id)); 
+</span><span>      });
+</span><span>    });
+</span><span>
+</span><span style="color:#9d0006;">on</span><span style="color:#b23c15;">&lt;</span><span style="color:#407959;">CommandUpdate</span><span style="color:#b23c15;">&gt;</span><span>((event, emit) </span><span style="color:#9d0006;">async</span><span> {
+</span><span>      </span><span style="color:#407959;">emit</span><span>(</span><span style="color:#407959;">CommandWait</span><span>());
+</span><span>      </span><span style="color:#9d0006;">await</span><span> db.</span><span style="color:#407959;">writeTxn</span><span>(() </span><span style="color:#9d0006;">async</span><span> {
+</span><span>        </span><span style="color:#9d0006;">final</span><span> id </span><span style="color:#b23c15;">= </span><span style="color:#9d0006;">await</span><span> db.dataUnits.</span><span style="color:#407959;">put</span><span>(event.updatedItem);
+</span><span>        </span><span style="color:#407959;">emit</span><span>(</span><span style="color:#407959;">CommandResult</span><span>(id));
+</span><span>      });
+</span><span>    });
+</span></code></pre>
+<ul>
+<li>Punya performa yang lumayan cepat, hampir mirip pakai array biasa karena loadingnya tidak terlalu lama.</li>
+<li>Method untuk handlenya lumayan powerfull, ada aroma-aroma LINQ didalamnya.</li>
+<li>Bergantung dengan .</li>
+<li>Membuat table atau struktur data didatabase menggunakan <code>@collection</code> dan <code>builder_runner</code></li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="font-style:italic;color:#928374;">// import isar
+</span><span style="color:#9d0006;">part of </span><span style="color:#79740e;">&#39;item.g.dart&#39;</span><span>;
+</span><span>
+</span><span style="color:#9d0006;">class </span><span style="color:#407959;">Item</span><span>{
+</span><span>    </span><span style="color:#407959;">Id</span><span style="color:#b23c15;">?</span><span> id;
+</span><span>    </span><span style="color:#407959;">String</span><span style="color:#b23c15;">?</span><span> title;
+</span><span>
+</span><span>    </span><span style="color:#407959;">Item</span><span>(</span><span style="color:#282828;">this</span><span>.id)</span><span style="color:#b23c15;">:</span><span> id </span><span style="color:#b23c15;">= </span><span style="color:#407959;">Isar</span><span>.autoIncrement;
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// setelah itu jalankan : flutter pub run build_runner build
+</span></code></pre>
+<ul>
+<li>Memuat Isar saya membuat satu instance dan menurunkanya ke BlocProvider (pastikan suddah run builder_runner):</li>
+</ul>
+<pre data-lang="dart" style="background-color:#fcf0ca;color:#282828aa;" class="language-dart "><code class="language-dart" data-lang="dart"><span style="color:#9d0006;">void </span><span style="color:#407959;">main</span><span>(){
+</span><span>    </span><span style="color:#407959;">Isar</span><span>.</span><span style="color:#407959;">open</span><span>(
+</span><span>        [</span><span style="color:#407959;">ItemSchema</span><span>]
+</span><span>    ).</span><span style="color:#407959;">then</span><span>((db) </span><span style="color:#b23c15;">=&gt;</span><span> {
+</span><span>        </span><span style="color:#407959;">runApp</span><span>(</span><span style="color:#407959;">App</span><span>(db))
+</span><span>    })
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#928374;">// Widget dengan parameter yang perlu db,
+</span><span style="font-style:italic;color:#928374;">// hanya konsep bukan working code.
+</span><span style="color:#9d0006;">class </span><span style="color:#407959;">App </span><span style="color:#9d0006;">extends </span><span style="color:#407959;">StatelessWidget</span><span>{
+</span><span>    </span><span style="color:#9d0006;">final </span><span style="color:#407959;">Isar</span><span> db;
+</span><span>    </span><span style="color:#407959;">App</span><span>(</span><span style="color:#282828;">this</span><span>.db);
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#928374;">// fungsi build bla bal
+</span><span>
+</span><span>    </span><span style="color:#407959;">MultiBlocProvider</span><span>(
+</span><span>        providers</span><span style="color:#b23c15;">:</span><span>[
+</span><span>            </span><span style="color:#407959;">BlocProvider</span><span>(
+</span><span>                create</span><span style="color:#b23c15;">:</span><span> (_) </span><span style="color:#b23c15;">=&gt; </span><span style="color:#407959;">BlocQuery</span><span>(db);
+</span><span>            ),
+</span><span>            </span><span style="color:#407959;">BlocProvider</span><span>(
+</span><span>                create</span><span style="color:#b23c15;">:</span><span> (_) </span><span style="color:#b23c15;">=&gt; </span><span style="color:#407959;">BlocCommand</span><span>(db);
+</span><span>            )
+</span><span>        ],
+</span><span>        child</span><span style="color:#b23c15;">: </span><span style="font-style:italic;color:#928374;">// ini home page/etc
+</span><span>    )
+</span><span>}
+</span></code></pre>
+<p>Sekian  dulu, kalau saya ketemu yang baru lagi nanti ditambah.</p>
+
+  </section>
+
+        </main>
+    </body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+        <title>Designing REST API with OpenAPI 3 :: Akasia</title>
+        <link rel="stylesheet" href="https://edelsora.github.io/main.css">
+
+        <meta name="description" content="How I easily designing, testing and documenting REST API for good">
+        <meta property="og:title" content="Designing REST API with OpenAPI 3 :: Akasia">
+        <meta property="og:description" content="How I easily designing, testing and documenting REST API for good">
+        <meta property="og:type" content="website">
+
+        
+        <meta property="og:url" content="https://edelsora.github.io/t/design-api-openapi3/">
+        <link rel="canonical" href="https://edelsora.github.io/t/design-api-openapi3/">
+        
+
+        <link rel="icon" href="/favicon.png">
+    </head>
+    <body>
+        <header>
+            <nav>
+            
+                <a href="/">&#x2F;home</a>
+            
+                <a href="/now">&#x2F;now</a>
+            
+                <a href="/project">&#x2F;project</a>
+            
+            </nav>
+        </header>
+        <main>
+            
+  <section class="journal">
+    <h1>Designing REST API with OpenAPI 3</h1>
+    <h2 class="highlight tagline">How I easily designing, testing and documenting REST API for good</h2>
+    <span class="meta-journal">
+      <b>December 08, 2022</b>
+    </span>
+
+    <p>REST API is a way to transport data from a web server to serve web client needs, such as requesting new authentication tokens, asking for resources data and much more. The growing number of endpoints could overwhelm us to remember their purpose, our app maybe could grow to numbers up to a hundred or more.</p>
+<p>Documenting an API is a good way to give information about our REST API server endpoints for use by third parties, help new coworkers get into the code base and of course for our future self. So this could help us not get overwhelmed by endpoints' purpose without needing to read the code of the API all time.
+Designing API</p>
+<p>How about designing an API? What its look like?</p>
+<p>Okay, let back to the basic thing. API work by receiving requests and producing a response after being handled by our API implementation function.</p>
+<p>So, in designing API we define how our API will respond if given a request, and define how the request and response shape:</p>
+<pre data-lang="yaml" style="background-color:#fcf0ca;color:#282828aa;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold;color:#407959;">/users/login</span><span>:
+</span><span>    </span><span style="font-weight:bold;color:#407959;">post</span><span>:
+</span><span>        </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Exchange user credential with credential token
+</span><span>        </span><span style="font-weight:bold;color:#407959;">requestBody</span><span>:
+</span><span>            </span><span style="font-weight:bold;color:#407959;">content</span><span>:
+</span><span>                  </span><span style="font-weight:bold;color:#407959;">application/json</span><span>:
+</span><span>                      </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">object
+</span><span>                      </span><span style="font-weight:bold;color:#407959;">properties</span><span>:
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">email</span><span>:
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">password</span><span>:
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>        </span><span style="font-weight:bold;color:#407959;">response</span><span>:
+</span><span>            </span><span style="color:#79740e;">&#39;200&#39;</span><span>:
+</span><span>                </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Ok
+</span><span>                </span><span style="font-weight:bold;color:#407959;">content</span><span>:
+</span><span>                    </span><span style="font-weight:bold;color:#407959;">application/json</span><span>:
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">object
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">properties</span><span>:
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">accessToken</span><span>:
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">refreshToken</span><span>:
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>            </span><span style="color:#79740e;">&#39;401&#39;</span><span>:
+</span><span>                </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Unauthorize
+</span></code></pre>
+<p>The code above states,</p>
+<p>our API endpoint /users/login ,</p>
+<ul>
+<li>
+<p>receive HTTP POST requests with content type application/json , with the body containing the object in JSON format and the object field consisting of:</p>
+<ul>
+<li>
+<p>email field with string type</p>
+</li>
+<li>
+<p>password field with string type</p>
+</li>
+</ul>
+</li>
+<li>
+<p>will have a possible response:</p>
+<ul>
+<li>
+<p>HTTP 200, with content type application/json , with object and field consisting of:</p>
+<ul>
+<li>
+<p>accessToken field with string type</p>
+</li>
+<li>
+<p>refreshToken field with string type</p>
+</li>
+</ul>
+</li>
+<li>
+<p>HTTP 401 without body content.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>For me, engaging myself to learn about OpenAPI is difficult at first like understanding the field for describing dynamic routes or shaping JSON in the request body.</p>
+<p>But after a couple of hours, I get used and thought it wise to design an API first instead of jumping to the text editor and writing the spec there. Here is the resources link, I used when learning OpenAPI:</p>
+<ul>
+<li>
+<p><a href="https://swagger.io/docs/specification/basic-structure/">https://swagger.io/docs/specification/basic-structure/</a></p>
+</li>
+<li>
+<p><a href="https://swagger.io/docs/specification/api-host-and-base-path/">https://swagger.io/docs/specification/api-host-and-base-path/</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=87ZFvJ7_-n0">https://www.youtube.com/watch?v=87ZFvJ7_-n0</a></p>
+</li>
+</ul>
+<p>To work better while designing API, I recommended a tool that is designed to handle this kind of task. I use Insomnia daily for designing API, here is what it looks like:
+Appreance while I designing API</p>
+<p>If you already finish your design and are done with writing the implementation code, you can test it with Insomnia too. If you see on the top right corner inside our API spec card, there is a &quot;Try it out&quot; button to test your API directly from there.</p>
+<p>Now you already had design, document and testing scenarios in one go. How convenient it is, isn't it?</p>
+<p>Exciting? Here basic template of OpenAPI spec for helping your start design now,</p>
+<pre data-lang="YAML" style="background-color:#fcf0ca;color:#282828aa;" class="language-YAML "><code class="language-YAML" data-lang="YAML"><span style="font-weight:bold;color:#407959;">openapi</span><span>: </span><span style="color:#8f3f71;">3.0.0
+</span><span style="font-weight:bold;color:#407959;">info</span><span>:
+</span><span>  </span><span style="font-weight:bold;color:#407959;">title</span><span>: </span><span style="color:#79740e;">Change the title as you like
+</span><span>  </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Same as above but for definition
+</span><span>  </span><span style="font-weight:bold;color:#407959;">version</span><span>: </span><span style="color:#8f3f71;">0.0.1
+</span><span>  
+</span><span> </span><span style="font-style:italic;color:#928374;"># this will used when you testing
+</span><span> </span><span style="font-style:italic;color:#928374;"># your api
+</span><span style="font-weight:bold;color:#407959;">servers</span><span>:
+</span><span>  - </span><span style="font-weight:bold;color:#407959;">url</span><span>: </span><span style="color:#79740e;">http://localhost:8080
+</span><span>    </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">&quot;local development url&quot;
+</span><span>
+</span><span> </span><span style="font-style:italic;color:#928374;"># this where most design occurred
+</span><span style="font-weight:bold;color:#407959;">paths</span><span>:
+</span><span>    </span><span style="font-weight:bold;color:#407959;">/users/login</span><span>:
+</span><span>        </span><span style="font-weight:bold;color:#407959;">post</span><span>:
+</span><span>            </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Exchange user credential with credential token
+</span><span>            </span><span style="font-weight:bold;color:#407959;">requestBody</span><span>:
+</span><span>                </span><span style="font-weight:bold;color:#407959;">content</span><span>:
+</span><span>                      </span><span style="font-weight:bold;color:#407959;">application/json</span><span>:
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">object
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">properties</span><span>:
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">email</span><span>:
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">password</span><span>:
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>            </span><span style="font-weight:bold;color:#407959;">response</span><span>:
+</span><span>                </span><span style="color:#79740e;">&#39;200&#39;</span><span>:
+</span><span>                    </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Ok
+</span><span>                    </span><span style="font-weight:bold;color:#407959;">content</span><span>:
+</span><span>                        </span><span style="font-weight:bold;color:#407959;">application/json</span><span>:
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">object
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">properties</span><span>:
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">accessToken</span><span>:
+</span><span>                                      </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">refreshToken</span><span>:
+</span><span>                                      </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>                </span><span style="color:#79740e;">&#39;401&#39;</span><span>:
+</span><span>                    </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">Unauthorize
+</span><span>        </span><span style="font-weight:bold;color:#407959;">get</span><span>:
+</span><span>              </span><span style="font-weight:bold;color:#407959;">summary</span><span>: </span><span style="color:#79740e;">&quot;Get current user profiles&quot;
+</span><span>              </span><span style="font-weight:bold;color:#407959;">responses</span><span>:
+</span><span>                  </span><span style="color:#79740e;">&#39;200&#39;</span><span>: 
+</span><span>                      </span><span style="font-weight:bold;color:#407959;">description</span><span>: </span><span style="color:#79740e;">A JSON array of user names
+</span><span>                      </span><span style="font-weight:bold;color:#407959;">content</span><span>:
+</span><span>                          </span><span style="font-weight:bold;color:#407959;">application/json</span><span>:
+</span><span>                              </span><span style="font-weight:bold;color:#407959;">schema</span><span>: 
+</span><span>                                  </span><span style="font-weight:bold;color:#407959;">$ref</span><span>: </span><span style="color:#79740e;">&quot;#/components/schemas/UserProfile&quot;
+</span><span>
+</span><span style="font-style:italic;color:#928374;"># This for request or response shape
+</span><span style="font-style:italic;color:#928374;"># template, so you just use ref rather
+</span><span style="font-style:italic;color:#928374;"># rewriting same definition twice.
+</span><span style="font-weight:bold;color:#407959;">components</span><span>:
+</span><span>    </span><span style="font-weight:bold;color:#407959;">schemas</span><span>:
+</span><span>        </span><span style="font-weight:bold;color:#407959;">UserProfile</span><span>:
+</span><span>          </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">object
+</span><span>          </span><span style="font-weight:bold;color:#407959;">properties</span><span>:
+</span><span>            </span><span style="font-weight:bold;color:#407959;">id</span><span>:
+</span><span>              </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">integer
+</span><span>              </span><span style="font-weight:bold;color:#407959;">example</span><span>: </span><span style="color:#8f3f71;">1
+</span><span>            </span><span style="font-weight:bold;color:#407959;">nama</span><span>:
+</span><span>              </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>              </span><span style="font-weight:bold;color:#407959;">example</span><span>: </span><span style="color:#79740e;">yourname
+</span><span>            </span><span style="font-weight:bold;color:#407959;">photo_url</span><span>:
+</span><span>              </span><span style="font-weight:bold;color:#407959;">type</span><span>: </span><span style="color:#79740e;">string
+</span><span>              </span><span style="font-weight:bold;color:#407959;">example</span><span>: </span><span style="color:#79740e;">https://github.com/yourgitusername
+</span></code></pre>
+<p>Thank you for reading until the end.</p>
+
+  </section>
+
+        </main>
+    </body>
+</html>
